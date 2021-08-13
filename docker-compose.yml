@@ -10,13 +10,14 @@ services:
       - type: bind
         source: "${ES_CONFIG_DIR}"
         target: /usr/share/elasticsearch/config
-        read_only: true
+        read_only: false
       # - type: volume
       #   source: elasticsearch
       #   target: /usr/share/elasticsearch/data
       - type: bind
         source: "${ES_DATA_DIR}"
-        target: /usr/share/elasticsearch/data=
+        target: /usr/share/elasticsearch/data
+        read_only: false
     ports:
       - "${ES_EXPOSED_PORT1}:9200"
       - "${ES_EXPOSED_PORT2}:9300"
