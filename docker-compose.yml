@@ -15,11 +15,11 @@ services:
         source: elasticsearch
         target: /usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "${ES_EXPOSED_PORT1}:9200"
+      - "${ES_EXPOSED_PORT2}:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: changeme
+      ES_JAVA_OPTS: "${ES_JAVA_OPT"S}
+      ELASTIC_PASSWORD: "${ELASTIC_PASSWORD}"
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/bootstrap-checks.html
       discovery.type: single-node
@@ -33,20 +33,22 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./logstash/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
+        # source: ./logstash/config/logstash.yml
+        # target: /usr/share/logstash/config/logstash.yml
+        source: ${LS_CONFIG_DIR}
+        target: /usr/share/logstash/config
         read_only: true
       - type: bind
-        source: ./logstash/pipeline
+        source: ${LS_PIPELINE_DIR}
         target: /usr/share/logstash/pipeline
         read_only: true
     ports:
-      - "5044:5044"
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
+      - "${LS_EXPOSED_PORT1}:5044"
+      - "${LS_EXPOSED_PORT2}:5000/tcp"
+      - "${LS_EXPOSED_PORT2}:5000/udp"
+      - "${LS_EXPOSED_PORT3}:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_JAVA_OPTS: "${LS_JAVA_OPTS}"
     networks:
       - elk
     depends_on:
@@ -63,7 +65,7 @@ services:
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
     ports:
-      - "5601:5601"
+      - "${KB_EXPOSED_PORT}:5601"
     networks:
       - elk
     depends_on:
