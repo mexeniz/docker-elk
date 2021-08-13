@@ -8,12 +8,15 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        source: "${ES_CONFIG_DIR}"
+        target: /usr/share/elasticsearch/config
         read_only: true
-      - type: volume
-        source: elasticsearch
-        target: /usr/share/elasticsearch/data
+      # - type: volume
+      #   source: elasticsearch
+      #   target: /usr/share/elasticsearch/data
+      - type: bind
+        source: "${ES_DATA_DIR}"
+        target: /usr/share/elasticsearch/data=
     ports:
       - "${ES_EXPOSED_PORT1}:9200"
       - "${ES_EXPOSED_PORT2}:9300"
@@ -61,8 +64,8 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./kibana/config/kibana.yml
-        target: /usr/share/kibana/config/kibana.yml
+        source: ${KB_CONFIG_DIR}
+        target: /usr/share/kibana/config
         read_only: true
     ports:
       - "${KB_EXPOSED_PORT}:5601"
